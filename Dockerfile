@@ -33,6 +33,10 @@ FROM ubuntu:20.04
 #ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin/bin:$PATH
 
+#reduce memory load without perf decrease
+#see: https://github.com/bitcoin/bitcoin/blob/master/doc/reduce-memory.md
+ENV MALLOC_ARENA_MAX=1
+
 COPY --from=build /app/bitcoin /opt/bitcoin
 
 RUN useradd -r bitcoin \

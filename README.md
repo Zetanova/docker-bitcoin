@@ -21,7 +21,7 @@ docker run -it -d \
     --restart=always \
     --volume bitcoin:/home/bitcoin/.bitcoin \
     -p 8333:8333 \
-    zetanova/bitcoin
+    zetanova/bitcoin:0.20.0
 ```
 
 ## bitcoin-cli
