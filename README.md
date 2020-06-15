@@ -16,7 +16,7 @@ firewall-cmd --permanent --zone=public --add-port=8333/tcp
 
 ## docker run
 ```
-docker run -it -d \
+docker run -d \
     --name bitcoin \
     --restart=always \
     --volume bitcoin:/home/bitcoin/.bitcoin \
