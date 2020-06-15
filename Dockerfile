@@ -52,4 +52,4 @@ VOLUME ["/home/bitcoin/.bitcoin"]
 
 EXPOSE 8332 8333
 
-CMD ["bitcoind", "-printtoconsole"]
+CMD ["bitcoind", "-printtoconsole=1", "-debuglogfile=0"]
