@@ -1,7 +1,7 @@
 FROM ubuntu:20.04 as build
 ARG TARGETPLATFORM
+ARG BITCOIN_VERSION
 
-ENV BITCOIN_VERSION=0.20.0
 ENV SIGNING_KEY=01EA5486DE18A882D4C2684590C8019E36C2E964
 
 RUN apt-get update && apt-get install -y \
@@ -50,6 +50,6 @@ WORKDIR "/home/bitcoin"
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
-EXPOSE 8332 8333
+EXPOSE 8332 8333 18501 18502
 
 CMD ["bitcoind", "-printtoconsole=1", "-debuglogfile=0"]
