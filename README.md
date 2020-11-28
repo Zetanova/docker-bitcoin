@@ -21,6 +21,7 @@ no rpc
 ```
 docker run -d \
     --name bitcoin \
+    --stop-timeout 90 \
     --restart=always \
     --volume bitcoin:/home/bitcoin/.bitcoin \
     -p 8333:8333 \
@@ -31,6 +32,7 @@ for external rpc client
 ```
 docker run -d \
     --name bitcoin \
+    --stop-timeout 90 \
     --restart=always \
     --volume bitcoin:/home/bitcoin/.bitcoin \
     -p 8333:8333 \
