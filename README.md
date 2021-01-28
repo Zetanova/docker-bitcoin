@@ -1,7 +1,7 @@
 ## docker build multiarch 
 ```
-export BITCOIN_VERSION=0.20.0
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg BITCOIN_VERSION -t zetanova/bitcoin:0.20.0 -t zetanova/bitcoin:latest --push .
+export BITCOIN_VERSION=0.21.0
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg BITCOIN_VERSION -t zetanova/bitcoin:0.21.0 -t zetanova/bitcoin:latest --push .
 ```
 
 ## docker setup
@@ -25,7 +25,7 @@ docker run -d \
     --restart=always \
     --volume bitcoin:/home/bitcoin/.bitcoin \
     -p 8333:8333 \
-    zetanova/bitcoin:0.20.0
+    zetanova/bitcoin:0.21.0
 ```
 
 for external rpc client
