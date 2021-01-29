@@ -27,8 +27,9 @@ RUN tar -xzf *.tar.gz -C . \
   && rm -rf ./bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt \
   && mv ./bitcoin-${BITCOIN_VERSION} ./bitcoin
 
-
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+#until https://github.com/bitcoin/bitcoin/issues/21019#issuecomment-769939189
+FROM ubuntu:focal-20200115
 
 #ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin/bin:$PATH

@@ -37,7 +37,7 @@ docker run -d \
     --volume bitcoin:/home/bitcoin/.bitcoin \
     -p 8333:8333 \
     -p 8332:8332 -p 18501:18501 -p 18502:18502 \
-    zetanova/bitcoin:0.20.0
+    zetanova/bitcoin:0.21.0
 ```
 
 ## bitcoin-cli
