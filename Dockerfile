@@ -15,8 +15,8 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] || [ "${TARGETPLATFORM}" = "" ]; 
   && if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then export BITCOIN_TARGET=aarch64-linux-gnu; fi \
   && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then export BITCOIN_TARGET=arm-linux-gnueabihf; fi \
   && echo "bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}" \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz" \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc" \
+  && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz" \
+  && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc" \
   && grep " bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz\$" SHA256SUMS.asc | sha256sum -c
 
 RUN gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys "$SIGNING_KEY" \
@@ -27,9 +27,9 @@ RUN tar -xzf *.tar.gz -C . \
   && rm -rf ./bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt \
   && mv ./bitcoin-${BITCOIN_VERSION} ./bitcoin
 
-#FROM ubuntu:20.04
+FROM ubuntu:20.04
 #until https://github.com/bitcoin/bitcoin/issues/21019#issuecomment-769939189
-FROM ubuntu:focal-20200115
+#FROM ubuntu:focal-20200115
 
 #ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin/bin:$PATH
