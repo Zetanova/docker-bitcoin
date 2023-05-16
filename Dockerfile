@@ -1,8 +1,7 @@
-FROM ubuntu:20.04 as build
+FROM ubuntu:22.04 as build
 ARG TARGETPLATFORM
 ARG BITCOIN_VERSION
-
-ENV SIGNING_KEY=01EA5486DE18A882D4C2684590C8019E36C2E964
+ARG BITCOIN_BUILDERS=fanquake laanwj vertion achow101
 
 RUN apt-get update && apt-get install -y \
     curl \
@@ -16,22 +15,30 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] || [ "${TARGETPLATFORM}" = "" ]; 
   && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then export BITCOIN_TARGET=arm-linux-gnueabihf; fi \
   && echo "bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}" \
   && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz" \
-  && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc" \
-  && grep " bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz\$" SHA256SUMS.asc | sha256sum -c
+  && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS" \
+  && grep " bitcoin-${BITCOIN_VERSION}-${BITCOIN_TARGET}.tar.gz\$" SHA256SUMS | sha256sum -c \
+  && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc"
 
-RUN gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys "$SIGNING_KEY" \
-  && gpg --verify SHA256SUMS.asc
+#import all builder keys
+RUN curl -SLO "https://raw.githubusercontent.com/bitcoin/bitcoin/v${BITCOIN_VERSION}/contrib/builder-keys/keys.txt" \
+  && while read fingerprint keyholder_name; do gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys ${fingerprint}; done < ./keys.txt \
+  && while read fingerprint keyholder_name; do gpg --keyserver hkps://keys.openpgp.org --recv-keys ${fingerprint}; done < ./keys.txt
+
+RUN gpg --refresh-keys \
+  && echo ${BITCOIN_BUILDERS} | while read builder; do \
+  echo "builder ${builder} verification" \
+  &&curl -SLO https://raw.githubusercontent.com/bitcoin-core/guix.sigs/main/${BITCOIN_VERSION}/${builder}/all.SHA256SUMS.asc \
+  && gpg --verify all.SHA256SUMS.asc SHA256SUMS \
+  && rm all.SHA256SUMS.asc; \
+  done
 
 RUN tar -xzf *.tar.gz -C . \
   && rm *.tar.gz *.asc \
   && rm -rf ./bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt \
   && mv ./bitcoin-${BITCOIN_VERSION} ./bitcoin
 
-FROM ubuntu:20.04
-#until https://github.com/bitcoin/bitcoin/issues/21019#issuecomment-769939189
-#FROM ubuntu:focal-20200115
+FROM ubuntu:22.04
 
-#ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin/bin:$PATH
 
 #reduce memory load without perf decrease
