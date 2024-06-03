@@ -1,11 +1,10 @@
 FROM ubuntu:22.04 as build
 ARG TARGETPLATFORM
 ARG BITCOIN_VERSION
-ARG BITCOIN_BUILDERS=fanquake laanwj vertion achow101
+ARG BITCOIN_BUILDERS=fanquake laanwj willcl-ark achow101
 
 RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
+    curl git gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -20,14 +19,13 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] || [ "${TARGETPLATFORM}" = "" ]; 
   && curl -SLO "https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc"
 
 #import all builder keys
-RUN curl -SLO "https://raw.githubusercontent.com/bitcoin/bitcoin/v${BITCOIN_VERSION}/contrib/builder-keys/keys.txt" \
-  && while read fingerprint keyholder_name; do gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys ${fingerprint}; done < ./keys.txt \
-  && while read fingerprint keyholder_name; do gpg --keyserver hkps://keys.openpgp.org --recv-keys ${fingerprint}; done < ./keys.txt
+RUN git clone https://github.com/bitcoin-core/guix.sigs \
+  && gpg --import guix.sigs/builder-keys/*
 
-RUN gpg --refresh-keys \
-  && echo ${BITCOIN_BUILDERS} | while read builder; do \
-  echo "builder ${builder} verification" \
-  &&curl -SLO https://raw.githubusercontent.com/bitcoin-core/guix.sigs/main/${BITCOIN_VERSION}/${builder}/all.SHA256SUMS.asc \
+RUN gpg --keyserver hkps://keys.openpgp.org --refresh-keys \
+  && for builder in ${BITCOIN_BUILDERS}; do \
+  echo "builder ${builder} verification" \  
+  && curl -SLO https://github.com/bitcoin-core/guix.sigs/raw/main/${BITCOIN_VERSION}/${builder}/all.SHA256SUMS.asc \
   && gpg --verify all.SHA256SUMS.asc SHA256SUMS \
   && rm all.SHA256SUMS.asc; \
   done
