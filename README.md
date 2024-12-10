@@ -1,8 +1,8 @@
 ## docker build multiarch 
 ```
-export BITCOIN_VERSION=27.0
+export BITCOIN_VERSION=28.0
 export BITCOIN_BUILDERS=fanquake laanwj willcl-ark achow101
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg BITCOIN_VERSION --build-arg BITCOIN_BUILDERS -t zetanova/bitcoin:27.0 -t zetanova/bitcoin:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg BITCOIN_VERSION --build-arg BITCOIN_BUILDERS -t zetanova/bitcoin:28.0 -t zetanova/bitcoin:latest --push .
 ```
 
 ## docker setup

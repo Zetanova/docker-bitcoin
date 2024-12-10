@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as build
+FROM ubuntu:24.04 AS build
 ARG TARGETPLATFORM
 ARG BITCOIN_VERSION
 ARG BITCOIN_BUILDERS=fanquake laanwj willcl-ark achow101
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
 
 RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] || [ "${TARGETPLATFORM}" = "" ]; then export BITCOIN_TARGET=x86_64-linux-gnu; fi \
   && if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then export BITCOIN_TARGET=aarch64-linux-gnu; fi \
@@ -35,7 +36,7 @@ RUN tar -xzf *.tar.gz -C . \
   && rm -rf ./bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt \
   && mv ./bitcoin-${BITCOIN_VERSION} ./bitcoin
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV PATH=/opt/bitcoin/bin:$PATH
 
